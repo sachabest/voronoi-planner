@@ -2,15 +2,15 @@
 
 ## CIS 391 Homework
 
-Created bt Sacha Best, last modified 10/2016
+Created by Sacha Best, last modified 10/2016
 
 ### Overview
 
-In this assignment, you will be creating an algorithm and visualization for calcuating paths through complex 3D spaces. THe goal is to use generalized Voronoi graphs to allow robots to autonomously move through buildings.
+In this assignment, you will be creating an algorithm and a visualization for calcuating paths through complex 2D spaces. THe goal is to use generalized Voronoi graphs to allow robots to autonomously move through buildings.
 
 ### Tasks
 
-You will have several discree tasks to complete. In general, the steps fo complete the path planner include:
+You will have several discreet tasks to complete. In general, the steps to complete the path planner include:
 
 1. Read input file format and create a data structure to hold the read information.
 2. Generate a Voronoi decomposition of the spaces
@@ -27,17 +27,17 @@ This assignment is created in Python. You are free to use standard Python module
 
 You will be given a file containing the following information:
 
-* first line: Dimensions of teh spaces (format: 100 500)
+* first line: Dimensions of the space (format: 100 500)
 * Second line: Start and end points (format: x1 y1 x2 y2)
 * Lines 3-n: points (in the bounding box) of obstacles (format: x y)
 
 ### Expected output
 
-YOu are expected to output at least 4 images from iterations of the voronoi decomposition algorithm running on each given input file. You may output these as PNG image files in the same dimension as the given bounding box. 
+You are expected to output at least 4 images from iterations of the voronoi decomposition algorithm running on each given input file. You may output these as PNG image files in the same dimension as the given bounding box. 
 
-Next, you should output the final path length between the start and end points (to the console is fine)
+Next, you should output the final path length between the start and end points (to the console is fine).
 
-Finally, please output an image (similar to the decompositions) with the final path from start to end
+Finally, please output an image (similar to the decompositions) with the final path from start to end.
 
 ### Provided code
 
