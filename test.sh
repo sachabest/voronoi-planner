@@ -1,0 +1,1 @@
+python planner/planner.py sample_data.txt out.png

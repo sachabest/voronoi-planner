@@ -3,14 +3,15 @@
 from drawing.canvas import Canvas
 from io.points import Reader
 from model.binary import BinaryModel
+from ui.canvas_painter import PathPainter
 
 import sys
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-def main():
-    assert len(sys.argv) > 2
-    reader = Reader(sys.argv[1])
-    model = BinaryModel(reader.get_dimensions(), reader.get_points())
-    canvas = Canvas(model, sys.argv[2])
-
-if __name__ == '__main__':
-    main()
+assert len(sys.argv) > 2
+app = QApplication(sys.argv)
+reader = Reader(sys.argv[1])
+model = BinaryModel(reader.get_dimensions(), reader.get_points())
+w = PathPainter(model)
+sys.exit(app.exec_())
