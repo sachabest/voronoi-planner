@@ -13,6 +13,8 @@ class PathPainter(QMainWindow):
     def colorMap(self, value):
         if value == -1:
             return (255, 0, 0)
+        elif value == -2:
+            return (0, 0, 0)
         elif value == 0:
             return (0, 200, 200)
         return (0, 0, 0)
