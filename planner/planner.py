@@ -3,16 +3,16 @@
 from drawing.canvas import Canvas
 from io.points import Reader
 from model.binary import BinaryModel
-from model.voronoi.fortune import computeVoronoiDiagram
 from model.voronoi.edge_arr import EdgeArray
 from ui.canvas_painter import PathPainter
 
 import sys
 import qdarkstyle
 import random
+import pyvoro
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
+from pprint import pprint
 # assert len(sys.argv) > 2
 SAMPLE_SIZE = 3000
 SIZE = 200
@@ -32,7 +32,9 @@ else:
             points.append((int(count / SIZE), count % SIZE))
         count += 1
     model = BinaryModel(dimensions, points)
-vor_result = computeVoronoiDiagram(model.obstacles)
+vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
+    [[0, model.width() - 1], [0, model.height() - 1]], 2.0)
+pprint(vor_result)
 print 'model starting'
 vor_model = EdgeArray(vor_result, model.grid)
 print 'model complete'
