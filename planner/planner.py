@@ -13,5 +13,5 @@ assert len(sys.argv) > 2
 app = QApplication(sys.argv)
 reader = Reader(sys.argv[1])
 model = BinaryModel(reader.get_dimensions(), reader.get_points())
-w = PathPainter(model)
+window = PathPainter(model)
 sys.exit(app.exec_())
