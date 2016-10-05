@@ -24,7 +24,7 @@ class PathPainter(QMainWindow):
     def prepSaveImage(self, grid):
         for i in xrange(0, self._image.width()):
             for j in xrange(0, self._image.height()):
-                value = qRgb(*self.colorMap(grid[i][j]))
+                value = qRgb(*self.colorMap(grid[j][i]))
                 self._image.setPixel(i, j, value)
         self._scene.addPixmap(QPixmap.fromImage(self._image))
         self.ui.graphicsView.fitInView(self._scene.itemsBoundingRect(), Qt.KeepAspectRatio)
