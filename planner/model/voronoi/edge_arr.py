@@ -1,3 +1,5 @@
+from translator import translate
+
 class EdgeArray(object):
 
     EPSILON = 0.0001
@@ -12,22 +14,16 @@ class EdgeArray(object):
         self.height = len(self.grid)
         for cell_i in xrange(0, len(voronoi)):
             cell = voronoi[cell_i]
-            for pair in cell['adjacency']:
-                self.pairs.append((cell['vertices'][pair[0]], cell['vertices'][pair[1]]))
-            # for vert_i in xrange(1, len(voronoi[cell_i]['vertices'])):
-            #     vert_prev = voronoi[cell_i]['vertices'][vert_i - 1]
-            #     vert_next = voronoi[cell_i]['vertices'][vert_i]
-            #     self.pairs.append((vert_prev, vert_next))
-                # may need to close loop
+            for face in cell['faces']:
+                self.pairs.append([cell['vertices'][i] for i in face['vertices']])
         for pair in self.pairs:
-            print pair
             for row in xrange(0, self.height):
                 self.all_pts.extend(self.intersect(pair[0], pair[1], [0, row], [self.width, row]))
         for point in self.all_pts:
-            x = int(point[1])
-            y = int(point[0])
-            y = self.height - y - 1
-            self.grid[x][y] = -2
+            x = int(point[0])
+            y = int(point[1])
+            [i, j] = translate(x, y, [self.width, self.height])
+            self.grid[i][j] = -2
             
     def old_parser(self, voronoi_tuple, grid):
         self.verts = voronoi_tuple[0]
