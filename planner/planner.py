@@ -4,6 +4,7 @@ from drawing.canvas import Canvas
 from io.points import Reader
 from model.binary import BinaryModel
 from model.voronoi.edge_arr import EdgeArray
+from model.djikstra import DjikstraGraph
 from ui.canvas_painter import PathPainter
 
 import sys
@@ -34,9 +35,11 @@ else:
     model = BinaryModel(dimensions, points)
 vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
     [[0, model.width() - 1], [0, model.height() - 1]], 2.0)
-pprint(vor_result)
 print 'model starting'
+
 vor_model = EdgeArray(vor_result, model.grid)
 print 'model complete'
+djikstra = DjikstraGraph.from_voronoi(vor_result)
+print djikstra.shortest_path(0, 1)
 window = PathPainter(model)
 sys.exit(app.exec_())
