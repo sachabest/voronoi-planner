@@ -75,14 +75,14 @@ class DjikstraGraph(object):
         return self._edgeMap[node_idx]
 
     def shortest_path(self, start, end):
-        pq = [(0, start, ())]
+        pq = [(0, start, [])]
         visited = set()
         while len(pq) > 0:
             (dist, vert, path) = heapq.heappop(pq)
             if vert not in visited:
                 visited.add(vert)
-                path = (vert, path)
-                if vert == start:
+                path.append(vert)
+                if vert == end:
                     return (dist, path)
                 for vert_other, next_dist in self.get_adjacency(vert):
                     if vert_other not in visited:
