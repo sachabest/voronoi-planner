@@ -36,10 +36,12 @@ else:
 vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
     [[0, model.width() - 1], [0, model.height() - 1]], 2.0)
 print 'model starting'
-
-vor_model = EdgeArray(vor_result, model.grid)
-print 'model complete'
 djikstra = DjikstraGraph.from_voronoi(vor_result)
-print djikstra.shortest_path(0, 1)
+vor_model = EdgeArray(vor_result, model.grid)
+(dist, path) = djikstra.shortest_path(0, 1, translate=True)
+print path
+vor_model.highlight_path(path)
+print 'model complete'
+
 window = PathPainter(model)
 sys.exit(app.exec_())

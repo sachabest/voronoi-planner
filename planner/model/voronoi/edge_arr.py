@@ -25,64 +25,17 @@ class EdgeArray(object):
             [i, j] = translate(x, y, [self.width, self.height])
             self.grid[i][j] = -2
             
-    def old_parser(self, voronoi_tuple, grid):
-        self.verts = voronoi_tuple[0]
-        self.lines = voronoi_tuple[1]
-        self.edges = voronoi_tuple[2]
-        self.grid = grid
-        self.width = len(self.grid[0])
-        self.height = len(self.grid)
-        all_pts = []
-        print 'verts: ', self.verts
-        print 'lines: ', self.lines
-        print 'edges: ', self.edges
-
-        for edge in self.edges:
-            # ax + by = c
-            a = self.lines[edge[0]][0]
-            b = self.lines[edge[0]][1]
-            c = self.lines[edge[0]][2]
-            # first find min coords because the ilne could be infinite
-            # we need two points of the line to use the intersect method
-            p1 = []
-            p2 = []
-            if edge[1] == -1:
-                # unbounded one direction
-                if edge[2] == -1:
-                    # unbounded both directions
-                    if a > EdgeArray.EPSILON:
-                        p1 = [EdgeArray.NEG_HUGE, int((c - (a * EdgeArray.NEG_HUGE)) / b)]
-                        p2 = [EdgeArray.HUGE, int((c - (a * EdgeArray.HUGE)) / b)]
-                    else:
-                        p1 = [int((c - (b * EdgeArray.HUGE)) / a), EdgeArray.HUGE]
-                        p2 = [int((c - (b * EdgeArray.NEG_HUGE)) / a), EdgeArray.NEG_HUGE]
-                else:
-                    p2 = self.verts[edge[2]]
-                    if a > EdgeArray.EPSILON:
-                        p1 = [EdgeArray.HUGE, int((c - (a * EdgeArray.HUGE)) / b)]
-                    else:
-                        p1 = [int((c - (b * EdgeArray.HUGE)) / a), EdgeArray.HUGE]
-            else:
-                if edge[2] == -1:
-                    p2 = [int(x) for x in self.verts[edge[1]]]
-                    if a > EdgeArray.EPSILON:
-                        p1 = [EdgeArray.HUGE, int((c - (a * EdgeArray.HUGE)) / b)]
-                    else:
-                        p1 = [int((c - (b * EdgeArray.HUGE)) / a), EdgeArray.HUGE]
-                else:
-                    p2 = self.verts[edge[1]]
-                    p1 = self.verts[edge[2]]
-            p1 = [int(x) for x in p1]
-            p2 = [int(x) for x in p2]
-            print 'Line from {0} to {1}'.format(p1, p2)
+    def highlight_path(self, path):
+        pts = []
+        for p_idx in xrange(1, len(path)):
             for row in xrange(0, self.height):
-                all_pts.extend(self.intersect(p1, p2, [0, row], [self.width, row]))
-        for point in all_pts:
-            x = int(point[1])
-            y = int(point[0])
-            y = self.height - y - 1
-            self.grid[x][y] = -2
-
+                pts.extend(self.intersect(path[p_idx - 1], path[p_idx], [0, row], [self.width, row]))
+        for point in pts:
+            x = int(point[0])
+            y = int(point[1])
+            [i, j] = translate(x, y, [self.width, self.height])
+            self.grid[i][j] = -3
+        
     def fclamp(self, flt):
         if flt < 0:
             return 0

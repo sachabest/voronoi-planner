@@ -65,7 +65,7 @@ class DjikstraGraph(object):
         return DjikstraGraph(verts, edges)
 
     def __init__(self, nodes, edge_weights, duplicate_list = []):
-        self.node = nodes
+        self.nodes = nodes
         self.duplicate_list = duplicate_list
         self._edgeMap = edge_weights
 
@@ -74,14 +74,14 @@ class DjikstraGraph(object):
         assert node_idx < len(self._edgeMap)
         return self._edgeMap[node_idx]
 
-    def shortest_path(self, start, end):
+    def shortest_path(self, start, end, translate=False):
         pq = [(0, start, [])]
         visited = set()
         while len(pq) > 0:
             (dist, vert, path) = heapq.heappop(pq)
             if vert not in visited:
                 visited.add(vert)
-                path.append(vert)
+                path.append(self.nodes[vert] if translate else vert)
                 if vert == end:
                     return (dist, path)
                 for vert_other, next_dist in self.get_adjacency(vert):
