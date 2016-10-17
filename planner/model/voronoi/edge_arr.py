@@ -41,7 +41,7 @@ class EdgeArray(object):
             return 0
         elif flt >= self.width:
             return self.width - 1
-        return flt
+        return int(flt)
 
     def intersect(self, p1, p2, q1, q2):
         '''
@@ -62,7 +62,10 @@ class EdgeArray(object):
         slope2 = dy2 / dx2
         if (abs(dx1) < EdgeArray.EPSILON):
             if ((q1[1] >= p1[1] and q1[1] <= p2[1]) or (q1[1] >= p2[1] and q1[1] <= p1[1])):
-                pts.append([self.fclamp(p1[0]), q1[1]])
+                x = self.fclamp(p1[0])
+                y = q1[1]
+                if self.prune_collisions(x, y): return [] 
+                pts.append([x, y])
         elif divzero or abs(slope1) < EdgeArray.EPSILON:
             if int(p1[1]) == int(q1[1]):
                 greater = p1
@@ -70,11 +73,26 @@ class EdgeArray(object):
                 if (p2[0] > p1[0]):
                     greater = p2
                     lesser = p1
+                y = q1[1]
                 for col in xrange(int(lesser[0]), int(greater[0])):
-                    pts.append([self.fclamp(col), q1[1]])
+                    x = self.fclamp(col)
+                    if self.prune_collisions(x, y): return []
+                    pts.append([x, y])
         else:
             x = ((q1[1] - p1[1]) / slope1) + p1[0]
             if ((x >= p1[0] and x <= p2[0]) or (x >= p2[0] and x <= p1[0])):
                 if x >= 0 and x < self.width:
-                    pts.append([self.fclamp(x), q1[1]])
+                    x = self.fclamp(x)
+                    y = q1[1]
+                    if self.prune_collisions(x, y): return []
+                    pts.append([x, y])
         return pts
+    
+    def prune_collisions(self, x, y):
+        # prune intersections with obstacles
+        [i, j] = translate(x, y, [self.width, self.height])
+        if self.grid[i][j] == -1: 
+            # obstacle hit
+            print 'hit obstacle, cancelling'
+            return True
+        return False

@@ -34,7 +34,7 @@ else:
         count += 1
     model = BinaryModel(dimensions, points)
 vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
-    [[0, model.width() - 1], [0, model.height() - 1]], 2.0)
+    [[0, model.width() ], [0, model.height() ]], 2.0)
 print 'model starting'
 djikstra = DjikstraGraph.from_voronoi(vor_result)
 vor_model = EdgeArray(vor_result, model.grid)
