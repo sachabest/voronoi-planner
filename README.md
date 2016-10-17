@@ -1,5 +1,6 @@
 # Voronoi Path Planning for Robotic Moevement
 
+![example](https://github.com/sachabest/voronoi-planner/raw/master/planner.png)
 ## CIS 391 Homework
 
 Created by Sacha Best, last modified 10/2016
