@@ -1,4 +1,5 @@
 from translator import translate
+from bresenham import get_line
 
 class EdgeArray(object):
 
@@ -17,8 +18,15 @@ class EdgeArray(object):
             for face in cell['faces']:
                 self.pairs.append([cell['vertices'][i] for i in face['vertices']])
         for pair in self.pairs:
-            for row in xrange(0, self.height):
-                self.all_pts.extend(self.intersect(pair[0], pair[1], [0, row], [self.width, row]))
+            bres_pts = get_line((int(pair[0][0]), int(pair[0][1])), (int(pair[1][0]), int(pair[1][1])), dim=(self.width, self.height))
+            hits_wall = False
+            for pt in bres_pts:
+                if self.prune_collisions(pt[0], pt[1]):
+                    hits_wall = True
+                    break
+            if not hits_wall:
+                self.all_pts.extend(bres_pts)
+                # self.all_pts.extend(self.intersect(pair[0], pair[1], [0, row], [self.width, row]))
         for point in self.all_pts:
             x = int(point[0])
             y = int(point[1])
@@ -93,6 +101,6 @@ class EdgeArray(object):
         [i, j] = translate(x, y, [self.width, self.height])
         if self.grid[i][j] == -1: 
             # obstacle hit
-            print 'hit obstacle, cancelling'
             return True
-        return False
+        else:
+            return False

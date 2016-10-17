@@ -20,4 +20,7 @@ class BinaryModel(object):
         assert y < self.height()
         assert x < self.width()
         y = self._dimensions[1] - y - 1
-        self.grid[y][x] = -1
+        if self.grid[y][x] == -1:
+            print 'duplicate found: ({0}, {1}), skipping'.format(tup[0], tup[1])
+        else:
+            self.grid[y][x] = -1
