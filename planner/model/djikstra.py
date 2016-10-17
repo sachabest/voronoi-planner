@@ -1,6 +1,7 @@
 import math
 import heapq
-
+from pprint import pprint
+from temp import path_set
 class DjikstraGraph(object):
 
     EPSILON = 0.01
@@ -8,6 +9,30 @@ class DjikstraGraph(object):
     @staticmethod
     def euclidean(p1, p2):
         return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+
+    @staticmethod
+    def from_edge_arr(pairs):
+        verts = {}
+        edges = {}
+        for pair in pairs:
+            p1 = (int(pair[0][0]), int(pair[0][1]))
+            p1_key = "{0}-{1}".format(p1[0], p1[1])
+            p2 = (int(pair[1][0]), int(pair[1][1]))
+            p2_key = "{0}-{1}".format(p2[0], p2[1])
+            dist = DjikstraGraph.euclidean(p1, p2)
+            if p1_key not in verts:
+                verts[p1_key] = p1
+            if p2_key not in verts:
+                verts[p2_key] = p2
+            if p1_key not in edges:
+                edges[p1_key] = [(p2_key, dist)]
+            elif (p2_key, dist) not in edges[p1_key]:
+                edges[p1_key].append((p2_key, dist))
+            if p2_key not in edges:
+                edges[p2_key] = [(p1_key, dist)]
+            elif (p1_key, dist) not in edges[p2_key]:
+                edges[p2_key].append((p1_key, dist))   
+        return DjikstraGraph(verts, edges)
 
     @staticmethod
     def from_voronoi(voronoi_result):
@@ -66,25 +91,29 @@ class DjikstraGraph(object):
 
     def __init__(self, nodes, edge_weights, duplicate_list = []):
         self.nodes = nodes
-        self.duplicate_list = duplicate_list
         self._edgeMap = edge_weights
 
     def get_adjacency(self, node_idx):
         ''' returns node index and edge weight as a tuple'''
-        assert node_idx < len(self._edgeMap)
+        # assert node_idx < len(self._edgeMap)
         return self._edgeMap[node_idx]
 
     def shortest_path(self, start, end, translate=False):
         pq = [(0, start, [])]
         visited = set()
+        distances = {start: 0}
         while len(pq) > 0:
             (dist, vert, path) = heapq.heappop(pq)
             if vert not in visited:
                 visited.add(vert)
-                path.append(self.nodes[vert] if translate else vert)
+                path = [self.nodes[vert] if translate else vert] + path
                 if vert == end:
                     return (dist, path)
                 for vert_other, next_dist in self.get_adjacency(vert):
                     if vert_other not in visited:
-                        heapq.heappush(pq, (dist + next_dist, vert_other, path))
+                        if vert_other not in distances or distances[vert_other] > dist + next_dist:
+                            heapq.heappush(pq, (dist + next_dist, vert_other, path))
+                            distances[vert_other] = dist + next_dist
+                        else:
+                            heapq.heappush(pq, (distances[vert_other], vert_other, path))
         return (-1, ())

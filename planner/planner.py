@@ -15,7 +15,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from pprint import pprint
 # assert len(sys.argv) > 2
-SAMPLE_SIZE = 3000
+SAMPLE_SIZE = 10000
 SIZE = 200
 app = QApplication(sys.argv)
 app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
@@ -36,10 +36,11 @@ else:
 vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
     [[0, model.width() ], [0, model.height() ]], 2.0)
 print 'model starting'
-djikstra = DjikstraGraph.from_voronoi(vor_result)
 vor_model = EdgeArray(vor_result, model.grid)
-(dist, path) = djikstra.shortest_path(0, 1, translate=True)
-print path
+djikstra = DjikstraGraph.from_edge_arr(vor_model.pruned_pairs)
+start = djikstra.nodes.keys()[0]
+end = djikstra.nodes.keys()[-1]
+(dist, path) = djikstra.shortest_path(start, end, translate=True)
 vor_model.highlight_path(path)
 print 'model complete'
 
