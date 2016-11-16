@@ -32,7 +32,7 @@ class LineReader(object):
         [self.width, self.height] = first_line
         for line in lines[1:]:
             line_split = line.split(' ')
-            if len(line_split) != 2:
+            if len(line_split) != 4:
                 self.logger.error("Invalid input format for points.")
             else:
                 self._lines.append((int(line_split[0]), int(line_split[1]), int(line_split[2]), int(line_split[3])))

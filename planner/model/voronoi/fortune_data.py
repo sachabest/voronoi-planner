@@ -1,3 +1,5 @@
+import heapq
+
 class Line(object):
 
     EPSILON = 0.001
@@ -6,28 +8,27 @@ class Line(object):
         return abs(b - 1) < EPSILON
         
     def __init__(self, arr, bbox=None):
-        print arr
-        self.x0 = arr[0][0]
-        self.x1 = arr[0][1]
-        self.y0 = arr[1][0]
-        self.y1 = arr[1][1]
+        self.x0 = arr[0]
+        self.x1 = arr[1]
+        self.y0 = arr[2]
+        self.y1 = arr[3]
         if bbox:
-            if arr[0][0] > bbox[1][0]:
-                self.x0 = bbox[1][0]
-            if arr[0][0] < bbox[0][0]:
-                self.x0 = bbox[0][0]
-            if arr[1][0] > bbox[1][0]:
-                self.x1 = bbox[1][0]
-            if arr[1][0] < bbox[0][0]:
-                self.x1 = bbox[0][0]
-            if arr[0][1] > bbox[1][1]:
-                self.y0 = bbox[1][1]
-            if arr[0][1] < bbox[0][1]:
-                self.y0 = bbox[0][1]
-            if arr[1][1] > bbox[1][1]:
-                self.y1 = bbox[1][1]
-            if arr[1][1] < bbox[0][1]:
-                self.y1 = bbox[0][1]
+            if arr[0] > bbox[2]:
+                self.x0 = bbox[2]
+            if arr[0] < bbox[0]:
+                self.x0 = bbox[0]
+            if arr[2] > bbox[2]:
+                self.x1 = bbox[2]
+            if arr[2] < bbox[0]:
+                self.x1 = bbox[0]
+            if arr[1] > bbox[3]:
+                self.y0 = bbox[3]
+            if arr[1] < bbox[1]:
+                self.y0 = bbox[1]
+            if arr[3] > bbox[3]:
+                self.y1 = bbox[3]
+            if arr[3] < bbox[1]:
+                self.y1 = bbox[1]
 
     def contains(self, x, y):
         '''
@@ -58,16 +59,6 @@ class Event:
         self.arc = arc
         self.valid = True
 
-class Arc:
-
-    def __init__(self, p, a=None, b=None):
-        self.oint = p
-        self.pprev = a
-        self.pnext = b
-        self.e = None
-        self.s0 = None
-        self.s1 = None
-
 class Segment:
     start = None
     end = None
@@ -85,10 +76,10 @@ class Segment:
 
 class BTree(object):
 
-    def __init__(self, data=None):
+    def __init__(self, data=None, left=None, right=None):
         self.data = data
-        self.left = None
-        self.right = None
+        self.left = left
+        self.right = right
 
 class pq(object):
     # Maintain a set and pq simultaneously
@@ -98,12 +89,12 @@ class pq(object):
         self.dedup = {}
 
     def push(self, event):
-        if event in self.dedeup:
+        if event in self.dedup:
             return False
         # x coord as PK
-        added = [event[0], event]
+        added = [event.x0, event]
         self.dedup[event] = added
-        heapq.heapqpush(self.heapq, added)
+        heapq.heappush(self.heapq, added)
 
     def remove_stored(self, removed):
         full_value = self.dedup[removed]

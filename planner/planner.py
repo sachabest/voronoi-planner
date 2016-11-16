@@ -40,9 +40,9 @@ else:
 # vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
 #     [[0, model.width() ], [0, model.height() ]], 2.0)
 
-line_result = Voronoi(line_model.obstacles, [[0, line_model.width()], [0, line_model.height()]])
+line_result = Voronoi(line_model.obstacles, [0, line_model.width(), 0, line_model.height()])
 line_result.process()
-print line_reuslt.get_output()
+print line_result.get_output()
 print 'model starting'
 vor_model = EdgeArray(vor_result, model.grid)
 djikstra = DjikstraGraph.from_edge_arr(vor_model.pruned_pairs)
