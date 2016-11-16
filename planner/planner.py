@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 from drawing.canvas import Canvas
-from io.points import Reader
+from io.points import Reader, LineReader
+from model.line import LineModel
 from model.binary import BinaryModel
 from model.voronoi.edge_arr import EdgeArray
 from model.djikstra import DjikstraGraph
+from model.voronoi.fortune_list import Voronoi
 from ui.canvas_painter import PathPainter
 
 import sys
@@ -21,8 +23,10 @@ app = QApplication(sys.argv)
 app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
 
 if (len(sys.argv) > 1):
-    reader = Reader(sys.argv[1])
-    model = BinaryModel(reader.get_dimensions(), reader.get_points())
+    # reader = Reader(sys.argv[1])
+    line_reader = LineReader(sys.argv[1])
+    line_model = LineModel(line_reader.get_dimensions(), line_reader.get_lines())
+    # model = BinaryModel(reader.get_dimensions(), reader.get_points())
 else:
     dimensions = (SIZE, SIZE)
     points = []
@@ -33,8 +37,12 @@ else:
             points.append((int(count / SIZE), count % SIZE))
         count += 1
     model = BinaryModel(dimensions, points)
-vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
-    [[0, model.width() ], [0, model.height() ]], 2.0)
+# vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
+#     [[0, model.width() ], [0, model.height() ]], 2.0)
+
+line_result = Voronoi(line_model.obstacles, [[0, line_model.width()], [0, line_model.height()]])
+line_result.process()
+print line_reuslt.get_output()
 print 'model starting'
 vor_model = EdgeArray(vor_result, model.grid)
 djikstra = DjikstraGraph.from_edge_arr(vor_model.pruned_pairs)

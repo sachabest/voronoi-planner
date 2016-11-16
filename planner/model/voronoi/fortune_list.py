@@ -21,7 +21,7 @@ class Voronoi(object):
                 self.process_line_events() # handle site event
 
         # after all points, process remaining circle events
-        while not self.circl_events.empty():
+        while not self.circle_events.is_empty():
             self.process_circle_event()
 
         self.finish_edges()
@@ -49,12 +49,16 @@ class Voronoi(object):
                 a.pnext.s0 = s
 
             # finish the edges before and after a
-            if a.s0 is not None: a.s0.finish(e.p)
-            if a.s1 is not None: a.s1.finish(e.p)
+            if a.s0 is not None: 
+                a.s0.finish(e.p)
+            if a.s1 is not None: 
+                a.s1.finish(e.p)
 
             # recheck circle events on either side of p
-            if a.pprev is not None: self.check_circle_event(a.pprev, e.x)
-            if a.pnext is not None: self.check_circle_event(a.pnext, e.x)
+            if a.pprev is not None: 
+                self.check_circle_event(a.pprev, e.x)
+            if a.pnext is not None: 
+                self.check_circle_event(a.pnext, e.x)
 
     def arc_insert(self, p):
         if self.arc is None:

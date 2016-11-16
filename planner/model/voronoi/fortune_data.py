@@ -6,6 +6,7 @@ class Line(object):
         return abs(b - 1) < EPSILON
         
     def __init__(self, arr, bbox=None):
+        print arr
         self.x0 = arr[0][0]
         self.x1 = arr[0][1]
         self.y0 = arr[1][0]
@@ -84,7 +85,7 @@ class Segment:
 
 class BTree(object):
 
-    def __init__(self, data):
+    def __init__(self, data=None):
         self.data = data
         self.left = None
         self.right = None
