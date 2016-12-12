@@ -1,7 +1,7 @@
 import math
 import heapq
 from pprint import pprint
-from temp import path_set
+
 class DjikstraGraph(object):
 
     EPSILON = 0.01

@@ -6,7 +6,9 @@ from model.line import LineModel
 from model.binary import BinaryModel
 from model.voronoi.edge_arr import EdgeArray
 from model.djikstra import DjikstraGraph
-from model.voronoi.fortune_list import Voronoi
+from model.voro_new.fortune_list import Voronoi
+from model.voro_new.fortune_data import Line
+from model.spec.voronoi import Voronoi as v2
 from ui.canvas_painter import PathPainter
 
 import sys
@@ -25,7 +27,7 @@ app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
 if (len(sys.argv) > 1):
     # reader = Reader(sys.argv[1])
     line_reader = LineReader(sys.argv[1])
-    line_model = LineModel(line_reader.get_dimensions(), line_reader.get_lines())
+    model = LineModel(line_reader.get_dimensions(), line_reader.get_lines())
     # model = BinaryModel(reader.get_dimensions(), reader.get_points())
 else:
     dimensions = (SIZE, SIZE)
@@ -37,14 +39,23 @@ else:
             points.append((int(count / SIZE), count % SIZE))
         count += 1
     model = BinaryModel(dimensions, points)
-# vor_result = pyvoro.compute_2d_voronoi(model.obstacles,
+# lines = [Line(line, [0, model.width(), 0, model.height()]) for line in model.obstacles]
+# raw_pts = set()
+# for obs in lines:
+#     for pt in obs.get_points():
+#         raw_pts.add(pt)
+# data = [[pt.x, pt.y] for pt in raw_pts]
+# print data
+# vor_result = pyvoro.compute_2d_voronoi(data,
 #     [[0, model.width() ], [0, model.height() ]], 2.0)
 
-line_result = Voronoi(line_model.obstacles, [0, line_model.width(), 0, line_model.height()])
-line_result.process()
-print line_result.get_output()
+vor_result = Voronoi(model.obstacles, [0, model.width(), 0, model.height()])
+# vor_result = v2(model.obstacles)
+
+vor_result.process()
+print vor_result.get_output()
 print 'model starting'
-vor_model = EdgeArray(vor_result, model.grid)
+vor_model = EdgeArray(vor_result.get_output(), model.grid)
 djikstra = DjikstraGraph.from_edge_arr(vor_model.pruned_pairs)
 start = djikstra.nodes.keys()[0]
 end = djikstra.nodes.keys()[-1]

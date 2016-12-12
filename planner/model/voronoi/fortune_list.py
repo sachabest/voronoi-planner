@@ -107,10 +107,10 @@ class Voronoi(object):
             i = self.arc
             while i.right is not None:
                 i = i.right
-            i.right = Arc(p, i)
+            i.right = BTree(p, i)
             
             # insert new segment between p and i
-            x = self.x0
+            x = self.
             y = (i.right.data.y + i.data.y) / 2.0
             start = Point(x, y)
 

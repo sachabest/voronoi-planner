@@ -1,6 +1,5 @@
 from translator import translate
 from bresenham import get_line
-from ..temp import path_set
 
 class EdgeArray(object):
 
@@ -14,10 +13,11 @@ class EdgeArray(object):
         self.grid = grid
         self.width = len(self.grid[0])
         self.height = len(self.grid)
-        for cell_i in xrange(0, len(voronoi)):
-            cell = voronoi[cell_i]
-            for face in cell['faces']:
-                self.pairs.append([cell['vertices'][i] for i in face['vertices']])
+        self.pairs = voronoi
+        # for cell_i in xrange(0, len(voronoi)):
+        #     cell = voronoi[cell_i]
+        #     for face in cell['faces']:
+        #         self.pairs.append([cell['vertices'][i] for i in face['vertices']])
         self.pruned_pairs = []
         for pair in self.pairs:
             bres_pts = get_line((int(pair[0][0]), int(pair[0][1])), (int(pair[1][0]), int(pair[1][1])), dim=(self.width, self.height))
@@ -27,10 +27,8 @@ class EdgeArray(object):
                     hits_wall = True
                     break
             if not hits_wall:
-                path_set.add(str(pair))
                 self.pruned_pairs.append(pair)
                 self.all_pts.extend(bres_pts)
-                # self.all_pts.extend(self.intersect(pair[0], pair[1], [0, row], [self.width, row]))
         for point in self.all_pts:
             x = int(point[0])
             y = int(point[1])
@@ -43,14 +41,10 @@ class EdgeArray(object):
             bres_pts = get_line(path[p_idx - 1], path[p_idx], 
                 dim=(self.width, self.height))
             pts.extend(bres_pts)
-            # for row in xrange(0, self.height):
-                # pts.extend(self.intersect(path[p_idx - 1], path[p_idx], [0, row], [self.width, row]))
         for point in pts:
             x = int(point[0])
             y = int(point[1])
             [i, j] = translate(x, y, [self.width, self.height])
-            # if self.grid[i][j] != -2:
-            #     print 'invalid path pt', x, y
             self.grid[i][j] = -3
         
     def fclamp(self, flt):
